@@ -1,0 +1,19 @@
+{
+    "name": "themeplate/image",
+    "description" : "ThemePlate image handler",
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "Gene Alyson Fortunado Torcende",
+            "email": "genealyson.torcende@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "ThemePlate\\": ""
+        }
+    }
+}
