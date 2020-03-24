@@ -56,6 +56,10 @@ class Image {
 
 	private static function process( $attachment_id, $size ) {
 
+		if ( self::is_processed( $attachment_id, $size ) ) {
+			return null;
+		}
+
 		$file  = get_attached_file( $attachment_id );
 		$image = self::filter( $file, 'crop', self::$sizes[ $size ] );
 		$info  = pathinfo( $file );
@@ -69,6 +73,15 @@ class Image {
 		wp_update_attachment_metadata( $attachment_id, $meta );
 
 		return $image->save( $info['dirname'] . '/' . $name );
+
+	}
+
+
+	private static function is_processed( $attachment_id, $size ) {
+
+		$meta = wp_get_attachment_metadata( $attachment_id );
+
+		return isset( $meta['sizes'][ $size ] );
 
 	}
 
