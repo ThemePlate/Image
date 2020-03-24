@@ -84,7 +84,7 @@ class Image {
 		$meta['sizes'][ $size ]['mime-type'] = $image->mime();
 
 		unset( $meta['tpi_lock'] );
-		wp_update_attachment_metadata( $attachment_id, $meta );
+		self::update_meta( $attachment_id, $meta );
 
 		return $image->save( $info['dirname'] . '/' . $name );
 
@@ -106,7 +106,14 @@ class Image {
 
 	private static function get_meta( $attachment_id ) {
 
-		return wp_get_attachment_metadata( $attachment_id );
+		return get_metadata( 'post', $attachment_id, '_wp_attachment_metadata', true );
+
+	}
+
+
+	private static function update_meta( $attachment_id, $data ) {
+
+		return update_metadata( 'post', $attachment_id, '_wp_attachment_metadata', $data );
 
 	}
 
@@ -117,7 +124,7 @@ class Image {
 
 		$meta['tpi_lock'] = true;
 
-		wp_update_attachment_metadata( $attachment_id, $meta );
+		self::update_meta( $attachment_id, $meta );
 
 	}
 
