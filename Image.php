@@ -71,6 +71,8 @@ class Image {
 			return false;
 		}
 
+		self::lock_attachment( $attachment_id );
+
 		$image = self::filter( $file, 'crop', self::$sizes[ $size ] );
 		$image = self::do_manipulations( $image, $size );
 		$info  = pathinfo( $file );
@@ -81,6 +83,7 @@ class Image {
 		$meta['sizes'][ $size ]['file'] = $name;
 		$meta['sizes'][ $size ]['mime-type'] = $image->mime();
 
+		unset( $meta['tpi_lock'] );
 		wp_update_attachment_metadata( $attachment_id, $meta );
 
 		return $image->save( $info['dirname'] . '/' . $name );
@@ -92,6 +95,10 @@ class Image {
 
 		$meta = self::get_meta( $attachment_id );
 
+		if ( isset( $meta['tpi_lock'] ) ) {
+			return true;
+		}
+
 		return isset( $meta['sizes'][ $size ] );
 
 	}
@@ -100,6 +107,17 @@ class Image {
 	private static function get_meta( $attachment_id ) {
 
 		return wp_get_attachment_metadata( $attachment_id );
+
+	}
+
+
+	private static function lock_attachment( $attachment_id ) {
+
+		$meta = self::get_meta( $attachment_id );
+
+		$meta['tpi_lock'] = true;
+
+		wp_update_attachment_metadata( $attachment_id, $meta );
 
 	}
 
