@@ -59,7 +59,14 @@ class Image {
 		$file  = get_attached_file( $attachment_id );
 		$image = self::filter( $file, 'crop', self::$sizes[ $size ] );
 		$info  = pathinfo( $file );
+		$meta  = wp_get_attachment_metadata( $attachment_id );
 		$name  = $info['filename'] . '-' . $size . '.' . $info['extension'];
+
+		$meta['sizes'][ $size ] = self::$sizes[ $size ];
+		$meta['sizes'][ $size ]['file'] = $name;
+		$meta['sizes'][ $size ]['mime-type'] = $image->mime();
+
+		wp_update_attachment_metadata( $attachment_id, $meta );
 
 		return $image->save( $info['dirname'] . '/' . $name );
 
