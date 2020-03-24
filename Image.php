@@ -27,7 +27,7 @@ class Image {
 	}
 
 
-	public static function manipulate( $size, $filter, $args ) {
+	public static function manipulate( $size, $filter, $args = null ) {
 
 		self::$manipulations[ $size ][] = compact( 'filter', 'args' );
 
