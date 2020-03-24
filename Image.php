@@ -62,6 +62,7 @@ class Image {
 
 		$file  = get_attached_file( $attachment_id );
 		$image = self::filter( $file, 'crop', self::$sizes[ $size ] );
+		$image = self::do_manipulations( $image, $size );
 		$info  = pathinfo( $file );
 		$meta  = self::get_meta( $attachment_id );
 		$name  = $info['filename'] . '-' . $size . '.' . $info['extension'];
@@ -89,6 +90,19 @@ class Image {
 	private static function get_meta( $attachment_id ) {
 
 		return wp_get_attachment_metadata( $attachment_id );
+
+	}
+
+
+	private static function do_manipulations( $image, $size ) {
+
+		if ( ! empty( self::$manipulations[ $size ] ) ) {
+			foreach ( self::$manipulations[ $size ] as $manipulation ) {
+				$image = call_user_func_array( array( $image, $manipulation['filter'] ), (array) $manipulation['args'] );
+			}
+		}
+
+		return $image;
 
 	}
 
