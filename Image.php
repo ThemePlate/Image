@@ -38,6 +38,8 @@ class Image {
 
 	public static function get_html( $attachment_id, $size ) {
 
+		self::process( $attachment_id, $size );
+
 		return wp_get_attachment_image( $attachment_id, $size );
 
 	}
@@ -45,7 +47,21 @@ class Image {
 
 	public static function get_url( $attachment_id, $size ) {
 
+		self::process( $attachment_id, $size );
+
 		return wp_get_attachment_image_url( $attachment_id, $size );
+
+	}
+
+
+	private static function process( $attachment_id, $size ) {
+
+		$file  = get_attached_file( $attachment_id );
+		$image = self::filter( $file, 'crop', self::$sizes[ $size ] );
+		$info  = pathinfo( $file );
+		$name  = $info['filename'] . '-' . $size . '.' . $info['extension'];
+
+		return $image->save( $info['dirname'] . '/' . $name );
 
 	}
 
