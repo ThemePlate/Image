@@ -126,14 +126,4 @@ class Image {
 
 	}
 
-
-	public static function test( $attachment_id ) {
-
-		$file  = get_attached_file( $attachment_id );
-		$image = self::filter( $file, 'pixelate', 10 );
-
-		$image->save( $file );
-
-	}
-
 }
