@@ -65,7 +65,12 @@ class Image {
 
 	private static function process( $attachment_id, $size ) {
 
-		$file  = get_attached_file( $attachment_id );
+		$file = get_attached_file( $attachment_id );
+
+		if ( ! $file ) {
+			return false;
+		}
+
 		$image = self::filter( $file, 'crop', self::$sizes[ $size ] );
 		$image = self::do_manipulations( $image, $size );
 		$info  = pathinfo( $file );
