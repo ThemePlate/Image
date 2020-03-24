@@ -50,13 +50,15 @@ class Image {
 	}
 
 
-	private static function filter( $file, $name, $args ) {
+	private static function filter( $image, $name, $args ) {
 
-		if ( ! self::$manager ) {
+		if ( ! self::$manager instanceof \Intervention\Image\ImageManager ) {
 			self::$manager = new ImageManager( array( 'driver' => 'gd' ) );
 		}
 
-		$image = self::$manager->make( $file );
+		if ( ! $image instanceof \Intervention\Image\Image ) {
+			$image = self::$manager->make( $image );
+		}
 
 		return call_user_func_array( array( $image, $name ), (array) $args );
 
