@@ -97,10 +97,10 @@ class Image {
 		$meta['sizes'][ $size ]['file'] = $name;
 		$meta['sizes'][ $size ]['mime-type'] = $image->mime();
 
+		$image->save( $info['dirname'] . '/' . $name );
 		unset( $meta['tpi_lock'] );
-		self::update_meta( $attachment_id, $meta );
 
-		return $image->save( $info['dirname'] . '/' . $name );
+		return self::update_meta( $attachment_id, $meta );
 
 	}
 
