@@ -16,6 +16,7 @@ class Image {
 	private static $sizes = array();
 	private static $manipulations = array();
 	private static $manager;
+	private static $tasks;
 
 
 	public static function register( $name, $width, $height ) {
@@ -54,16 +55,29 @@ class Image {
 	}
 
 
+	public static function processor() {
+
+		self::$tasks = new Tasks( __CLASS__ );
+
+		if ( ! defined( 'DOING_AJAX' ) ) {
+			add_action( 'shutdown', array( self::$tasks, 'execute' ) );
+		}
+
+		return self::$tasks;
+
+	}
+
+
 	private static function maybe_process( $attachment_id, $size ) {
 
 		if ( ! self::is_processed( $attachment_id, $size ) && ! empty( self::$sizes[ $size ] ) ) {
-			self::process( $attachment_id, $size );
+			self::$tasks->add( array( Image::class, 'process' ), array( $attachment_id, $size ) );
 		}
 
 	}
 
 
-	private static function process( $attachment_id, $size ) {
+	public static function process( $attachment_id, $size ) {
 
 		$file = get_attached_file( $attachment_id );
 
