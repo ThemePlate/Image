@@ -71,6 +71,7 @@ class Image {
 	private static function maybe_process( $attachment_id, $size ) {
 
 		if ( ! self::is_processed( $attachment_id, $size ) && ! empty( self::$sizes[ $size ] ) ) {
+			self::lock_attachment( $attachment_id, $size );
 			self::$tasks->add( array( Image::class, 'process' ), array( $attachment_id, $size ) );
 		}
 
@@ -85,8 +86,6 @@ class Image {
 			return false;
 		}
 
-		self::lock_attachment( $attachment_id );
-
 		$image = self::filter( $file, 'crop', self::$sizes[ $size ] );
 		$image = self::do_manipulations( $image, $size );
 		$info  = pathinfo( $file );
@@ -98,7 +97,7 @@ class Image {
 		$meta['sizes'][ $size ]['mime-type'] = $image->mime();
 
 		$image->save( $info['dirname'] . '/' . $name );
-		unset( $meta['tpi_lock'] );
+		unset( $meta['tpi_lock'][ $size ] );
 
 		return self::update_meta( $attachment_id, $meta );
 
@@ -109,7 +108,7 @@ class Image {
 
 		$meta = self::get_meta( $attachment_id );
 
-		if ( isset( $meta['tpi_lock'] ) ) {
+		if ( isset( $meta['tpi_lock'][ $size ] ) ) {
 			return true;
 		}
 
@@ -132,11 +131,11 @@ class Image {
 	}
 
 
-	private static function lock_attachment( $attachment_id ) {
+	private static function lock_attachment( $attachment_id, $size ) {
 
 		$meta = self::get_meta( $attachment_id );
 
-		$meta['tpi_lock'] = true;
+		$meta['tpi_lock'][ $size ] = true;
 
 		self::update_meta( $attachment_id, $meta );
 
