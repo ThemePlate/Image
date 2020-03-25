@@ -13,6 +13,12 @@ Image::register( 'another_size', 640, 480 );
 Image::manipulate( 'another_size', 'greyscale' );
 Image::manipulate( 'another_size', 'blur', 20 );
 Image::get_url( 'attachment_id', 'another_size' );
+
+$processor = Image::processor();
+
+$processor->report( function( $output ) {
+	error_log( print_r( $output, true ) );
+} );
 ```
 
 ### Image::register( $name, $width, $height )
