@@ -15,6 +15,7 @@ class Image {
 
 	private static $sizes = array();
 	private static $manipulations = array();
+	private static $storage = array();
 	private static $manager;
 	private static $tasks;
 
@@ -119,12 +120,18 @@ class Image {
 
 	private static function get_meta( $attachment_id ) {
 
-		return get_metadata( 'post', $attachment_id, '_wp_attachment_metadata', true );
+		if ( empty( self::$storage[ $attachment_id ] ) ) {
+			self::$storage[ $attachment_id ] = get_metadata( 'post', $attachment_id, '_wp_attachment_metadata', true );
+		}
+
+		return self::$storage[ $attachment_id ];
 
 	}
 
 
 	private static function update_meta( $attachment_id, $data ) {
+
+		self::$storage[ $attachment_id ] = $data;
 
 		return update_metadata( 'post', $attachment_id, '_wp_attachment_metadata', $data );
 
