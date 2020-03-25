@@ -73,7 +73,12 @@ class Image {
 
 		if ( ! self::is_processed( $attachment_id, $size ) && ! empty( self::$sizes[ $size ] ) ) {
 			self::lock_attachment( $attachment_id, $size );
-			self::$tasks->add( array( Image::class, 'process' ), array( $attachment_id, $size ) );
+
+			if ( self::$tasks instanceof Tasks ) {
+				self::$tasks->add( array( Image::class, 'process' ), array( $attachment_id, $size ) );
+			} else {
+				self::process( $attachment_id, $size );
+			}
 		}
 
 	}
