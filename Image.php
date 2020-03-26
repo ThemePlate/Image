@@ -88,7 +88,7 @@ class Image {
 
 		$file = get_attached_file( $attachment_id );
 
-		if ( ! $file ) {
+		if ( ! $file || ! file_exists( $file ) ) {
 			return false;
 		}
 
