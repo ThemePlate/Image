@@ -95,6 +95,10 @@ class Image {
 		$type = self::$sizes[ $size ]['crop'] ? 'crop' : 'resize';
 		$args = self::$sizes[ $size ];
 
+		if ( is_array( self::$sizes[ $size ]['crop'] ) ) {
+			$args += self::$sizes[ $size ]['crop'];
+		}
+
 		if ( 'resize' === $type ) {
 			$args[] = function( $constraint ) {
 				$constraint->aspectRatio();
