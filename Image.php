@@ -95,6 +95,13 @@ class Image {
 		$type = self::$sizes[ $size ]['crop'] ? 'crop' : 'resize';
 		$args = self::$sizes[ $size ];
 
+		if ( 'resize' === $type ) {
+			$args[] = function( $constraint ) {
+				$constraint->aspectRatio();
+				$constraint->upsize();
+			};
+		}
+
 		unset( $args['crop'] );
 
 		$image = self::filter( $file, $type, $args );
