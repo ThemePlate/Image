@@ -20,9 +20,9 @@ class Image {
 	private static $tasks;
 
 
-	public static function register( $name, $width, $height ) {
+	public static function register( $name, $width, $height, $crop = false ) {
 
-		self::$sizes[ $name ] = compact( 'width', 'height' );
+		self::$sizes[ $name ] = compact( 'width', 'height', 'crop' );
 
 		return self::$sizes;
 
@@ -92,7 +92,12 @@ class Image {
 			return false;
 		}
 
-		$image = self::filter( $file, 'crop', self::$sizes[ $size ] );
+		$type = self::$sizes[ $size ]['crop'] ? 'crop' : 'resize';
+		$args = self::$sizes[ $size ];
+
+		unset( $args['crop'] );
+
+		$image = self::filter( $file, $type, $args );
 		$image = self::do_manipulations( $image, $size );
 		$info  = pathinfo( $file );
 		$meta  = self::get_meta( $attachment_id );
