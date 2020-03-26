@@ -71,7 +71,7 @@ class Image {
 
 	private static function maybe_process( $attachment_id, $size ) {
 
-		if ( ! self::is_processed( $attachment_id, $size ) && ! empty( self::$sizes[ $size ] ) ) {
+		if ( self::is_image( $attachment_id ) && ! self::is_processed( $attachment_id, $size ) && ! empty( self::$sizes[ $size ] ) ) {
 			self::lock_attachment( $attachment_id, $size );
 
 			if ( self::$tasks instanceof Tasks ) {
@@ -106,6 +106,15 @@ class Image {
 		unset( $meta['tpi_lock'][ $size ] );
 
 		return self::update_meta( $attachment_id, $meta );
+
+	}
+
+
+	private static function is_image( $attachment_id ) {
+
+		$meta = self::get_meta( $attachment_id );
+
+		return ! empty( $meta );
 
 	}
 
