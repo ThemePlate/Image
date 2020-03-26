@@ -112,6 +112,12 @@ class Image {
 
 	private static function is_image( $attachment_id ) {
 
+		$file = get_attached_file( $attachment_id );
+
+		if ( ! $file || ! file_exists( $file ) ) {
+			return false;
+		}
+
 		$meta = self::get_meta( $attachment_id );
 
 		return ! empty( $meta );
