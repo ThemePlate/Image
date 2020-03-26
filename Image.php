@@ -94,9 +94,10 @@ class Image {
 
 		$type = self::$sizes[ $size ]['crop'] ? 'crop' : 'resize';
 		$args = self::$sizes[ $size ];
+		$meta = self::get_meta( $attachment_id );
 
 		if ( is_array( self::$sizes[ $size ]['crop'] ) ) {
-			$args += self::$sizes[ $size ]['crop'];
+			$args += self::position( $args, $meta );
 		}
 
 		if ( 'resize' === $type ) {
@@ -111,7 +112,6 @@ class Image {
 		$image = self::filter( $file, $type, $args );
 		$image = self::do_manipulations( $image, $size );
 		$info  = pathinfo( $file );
-		$meta  = self::get_meta( $attachment_id );
 		$name  = $info['filename'] . '-' . $size . '.' . $info['extension'];
 
 		$meta['sizes'][ $size ] = self::$sizes[ $size ];
@@ -209,6 +209,36 @@ class Image {
 		}
 
 		return call_user_func_array( array( $image, $name ), (array) $args );
+
+	}
+
+
+	private static function position( $size, $meta ) {
+
+		$crop_x = $size['crop'][0];
+		$crop_y = $size['crop'][1];
+		$crop_w = $size['width'];
+		$crop_h = $size['height'];
+		$orig_w = $meta['width'];
+		$orig_h = $meta['height'];
+
+		if ( 'left' === $crop_x ) {
+			$pos_x = 0;
+		} elseif ( 'right' === $crop_x ) {
+			$pos_x = $orig_w - $crop_w;
+		} else {
+			$pos_x = floor( ( $orig_w - $crop_w ) / 2 );
+		}
+
+		if ( 'top' === $crop_y ) {
+			$pos_y = 0;
+		} elseif ( 'bottom' === $crop_y ) {
+			$pos_y = $orig_h - $crop_h;
+		} else {
+			$pos_y = floor( ( $orig_h - $crop_h ) / 2 );
+		}
+
+		return compact( 'pos_x', 'pos_y' );
 
 	}
 
