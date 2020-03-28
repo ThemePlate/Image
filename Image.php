@@ -201,7 +201,7 @@ class Image {
 	private static function filter( $image, $name, $args ) {
 
 		if ( ! self::$manager instanceof \Intervention\Image\ImageManager ) {
-			self::$manager = new ImageManager( array( 'driver' => 'gd' ) );
+			self::$manager = new ImageManager( self::get_driver() );
 		}
 
 		if ( ! $image instanceof \Intervention\Image\Image ) {
@@ -241,6 +241,21 @@ class Image {
 		}
 
 		return compact( 'pos_x', 'pos_y' );
+
+	}
+
+
+	private static function get_driver() {
+
+		$config = array(
+			'driver' => 'gd',
+		);
+
+        if ( extension_loaded( 'imagick' ) && class_exists( 'Imagick', false ) ) {
+            $config['driver'] = 'imagick';
+        }
+
+        return $config;
 
 	}
 
