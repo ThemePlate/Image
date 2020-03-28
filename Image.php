@@ -92,11 +92,11 @@ class Image {
 			return false;
 		}
 
-		$type = self::$sizes[ $size ]['crop'] ? 'crop' : 'resize';
 		$args = self::$sizes[ $size ];
+		$type = $args['crop'] ? 'crop' : 'resize';
 		$meta = self::get_meta( $attachment_id );
 
-		if ( is_array( self::$sizes[ $size ]['crop'] ) ) {
+		if ( is_array( $args['crop'] ) ) {
 			$args += self::position( $args, $meta );
 		}
 
