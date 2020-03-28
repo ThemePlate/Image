@@ -114,8 +114,9 @@ class Image {
 		$info  = pathinfo( $file );
 		$name  = $info['filename'] . '-' . $size . '.' . $info['extension'];
 
-		$meta['sizes'][ $size ] = self::$sizes[ $size ];
-		$meta['sizes'][ $size ]['file'] = $name;
+		$meta['sizes'][ $size ]['file']      = $name;
+		$meta['sizes'][ $size ]['width']     = $image->width();
+		$meta['sizes'][ $size ]['height']    = $image->height();
 		$meta['sizes'][ $size ]['mime-type'] = $image->mime();
 
 		$image->save( $info['dirname'] . '/' . $name, 100 );
