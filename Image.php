@@ -215,6 +215,8 @@ class Image {
 
 	private static function position( $size, $meta ) {
 
+		$size['crop'] = array_values( $size['crop'] );
+
 		$crop_x = $size['crop'][0];
 		$crop_y = $size['crop'][1];
 		$crop_w = $size['width'];
