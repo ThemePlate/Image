@@ -73,7 +73,9 @@ class Image {
 
 	public static function hooker( $image, $attachment_id, $size ) {
 
-		self::maybe_process( $attachment_id, $size );
+		if ( ! is_admin() ) {
+			self::maybe_process( $attachment_id, $size );
+		}
 
 		return $image;
 
