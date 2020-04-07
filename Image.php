@@ -64,7 +64,18 @@ class Image {
 			add_action( 'shutdown', array( self::$tasks, 'execute' ) );
 		}
 
+		add_filter( 'wp_get_attachment_image_src', array( Image::class, 'hooker' ), 10, 3 );
+
 		return self::$tasks;
+
+	}
+
+
+	public static function hooker( $image, $attachment_id, $size ) {
+
+		self::maybe_process( $attachment_id, $size );
+
+		return $image;
 
 	}
 
