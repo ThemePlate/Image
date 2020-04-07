@@ -142,6 +142,10 @@ class Image {
 
 	private static function is_image( $attachment_id ) {
 
+		if ( ! empty( self::$storage[ $attachment_id ] ) ) {
+			return true;
+		}
+
 		$file = get_attached_file( $attachment_id );
 
 		if ( ! $file || ! file_exists( $file ) ) {
