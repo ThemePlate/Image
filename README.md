@@ -38,3 +38,21 @@ $processor->report( function( $output ) {
 
 - **$attachment_id** *(int)(Required)* Image attachment ID
 - **$size** *(string)(Required)* Valid image size
+
+### Image::processor()
+
+Do the processing(crop/resize and manipulations) in the background
+
+---
+
+> **After v1.1.0**, `Image::get_html` or `Image::get_url` is optional
+>
+> Simply use the core functions like you normally would
+>
+> - wp_get_attachment_image
+> - wp_get_attachment_image_url
+> - the_post_thumbnail
+> - get_the_post_thumbnail
+> - get_the_post_thumbnail_url
+>
+> > Given `Image::processor()` is *used and fired* successfully
