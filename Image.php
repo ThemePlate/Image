@@ -41,11 +41,11 @@ class Image {
 	public static function get_html( $attachment_id, $size ) {
 
 		self::maybe_process( $attachment_id, $size );
-		remove_filter( 'wp_get_attachment_image_src', array( Image::class, 'hooker' ) );
+		self::hook_process( false );
 
 		$output = wp_get_attachment_image( $attachment_id, $size );
 
-		add_filter( 'wp_get_attachment_image_src', array( Image::class, 'hooker' ), 10, 3 );
+		self::hook_process( true );
 
 		return $output;
 
@@ -55,11 +55,11 @@ class Image {
 	public static function get_url( $attachment_id, $size ) {
 
 		self::maybe_process( $attachment_id, $size );
-		remove_filter( 'wp_get_attachment_image_src', array( Image::class, 'hooker' ) );
+		self::hook_process( false );
 
 		$output = wp_get_attachment_image_url( $attachment_id, $size );
 
-		add_filter( 'wp_get_attachment_image_src', array( Image::class, 'hooker' ), 10, 3 );
+		self::hook_process( true );
 
 		return $output;
 
@@ -74,9 +74,20 @@ class Image {
 			add_action( 'shutdown', array( self::$tasks, 'execute' ) );
 		}
 
-		add_filter( 'wp_get_attachment_image_src', array( Image::class, 'hooker' ), 10, 3 );
+		self::hook_process( true );
 
 		return self::$tasks;
+
+	}
+
+
+	private static function hook_process( $enable ) {
+
+		if ( $enable ) {
+			add_filter( 'wp_get_attachment_image_src', array( Image::class, 'hooker' ), 10, 3 );
+		} else {
+			remove_filter( 'wp_get_attachment_image_src', array( Image::class, 'hooker' ) );
+		}
 
 	}
 
