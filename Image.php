@@ -41,6 +41,7 @@ class Image {
 	public static function get_html( $attachment_id, $size ) {
 
 		self::maybe_process( $attachment_id, $size );
+		remove_filter( 'wp_get_attachment_image_src', array( Image::class, 'hooker' ) );
 
 		return wp_get_attachment_image( $attachment_id, $size );
 
@@ -50,6 +51,7 @@ class Image {
 	public static function get_url( $attachment_id, $size ) {
 
 		self::maybe_process( $attachment_id, $size );
+		remove_filter( 'wp_get_attachment_image_src', array( Image::class, 'hooker' ) );
 
 		return wp_get_attachment_image_url( $attachment_id, $size );
 
