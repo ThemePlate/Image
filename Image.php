@@ -68,7 +68,9 @@ class Image {
 
 	public static function processor() {
 
-		self::$tasks = new Tasks( __CLASS__ );
+		if ( ! self::$tasks instanceof Tasks ) {
+			self::$tasks = new Tasks( __CLASS__ );
+		}
 
 		if ( ! defined( 'DOING_AJAX' ) ) {
 			add_action( 'shutdown', array( self::$tasks, 'execute' ) );
