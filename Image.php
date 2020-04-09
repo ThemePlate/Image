@@ -13,9 +13,9 @@ use Intervention\Image\ImageManager;
 
 class Image {
 
-	private static $sizes = array();
+	private static $sizes         = array();
 	private static $manipulations = array();
-	private static $storage = array();
+	private static $storage       = array();
 	private static $manager;
 	private static $tasks;
 
@@ -290,11 +290,11 @@ class Image {
 			'driver' => 'gd',
 		);
 
-        if ( extension_loaded( 'imagick' ) && class_exists( 'Imagick', false ) ) {
-            $config['driver'] = 'imagick';
-        }
+		if ( extension_loaded( 'imagick' ) && class_exists( 'Imagick', false ) ) {
+			$config['driver'] = 'imagick';
+		}
 
-        return $config;
+		return $config;
 
 	}
 
