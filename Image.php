@@ -43,7 +43,11 @@ class Image {
 		self::maybe_process( $attachment_id, $size );
 		remove_filter( 'wp_get_attachment_image_src', array( Image::class, 'hooker' ) );
 
-		return wp_get_attachment_image( $attachment_id, $size );
+		$output = wp_get_attachment_image( $attachment_id, $size );
+
+		add_filter( 'wp_get_attachment_image_src', array( Image::class, 'hooker' ), 10, 3 );
+
+		return $output;
 
 	}
 
@@ -53,7 +57,11 @@ class Image {
 		self::maybe_process( $attachment_id, $size );
 		remove_filter( 'wp_get_attachment_image_src', array( Image::class, 'hooker' ) );
 
-		return wp_get_attachment_image_url( $attachment_id, $size );
+		$output = wp_get_attachment_image_url( $attachment_id, $size );
+
+		add_filter( 'wp_get_attachment_image_src', array( Image::class, 'hooker' ), 10, 3 );
+
+		return $output;
 
 	}
 
