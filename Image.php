@@ -241,7 +241,7 @@ class Image {
 
 	private static function filter( $image, $name, $args ) {
 
-		if ( ! self::$manager instanceof \Intervention\Image\ImageManager ) {
+		if ( ! self::$manager instanceof ImageManager ) {
 			self::$manager = new ImageManager( self::get_driver() );
 		}
 
