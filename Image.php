@@ -86,9 +86,9 @@ class Image {
 	private static function hook_process( $enable ) {
 
 		if ( $enable ) {
-			add_filter( 'wp_get_attachment_image_src', array( Image::class, 'hooker' ), 10, 3 );
+			add_filter( 'wp_get_attachment_image_src', array( __CLASS__, 'hooker' ), 10, 3 );
 		} else {
-			remove_filter( 'wp_get_attachment_image_src', array( Image::class, 'hooker' ) );
+			remove_filter( 'wp_get_attachment_image_src', array( __CLASS__, 'hooker' ) );
 		}
 
 	}
@@ -111,7 +111,7 @@ class Image {
 			self::lock_attachment( $attachment_id, $size );
 
 			if ( self::$tasks instanceof Tasks ) {
-				self::$tasks->add( array( Image::class, 'process' ), array( $attachment_id, $size ) );
+				self::$tasks->add( array( __CLASS__, 'process' ), array( $attachment_id, $size ) );
 			} else {
 				self::process( $attachment_id, $size );
 			}
