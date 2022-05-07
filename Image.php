@@ -41,72 +41,25 @@ class Image {
 	}
 
 
-	public static function get_html( int $attachment_id, string $size ): string {
-
-		self::maybe_process( $attachment_id, $size );
-		self::hook_process( false );
-
-		$output = wp_get_attachment_image( $attachment_id, $size );
-
-		self::hook_process( true );
-
-		return $output;
-
-	}
-
-
-	public static function get_url( int $attachment_id, string $size ): string {
-
-		self::maybe_process( $attachment_id, $size );
-		self::hook_process( false );
-
-		$output = wp_get_attachment_image_url( $attachment_id, $size );
-
-		self::hook_process( true );
-
-		return $output;
-
-	}
-
-
 	public static function processor( Tasks $tasks = null ): ?Tasks {
 
 		if ( ! self::$tasks instanceof Tasks && class_exists( Tasks::class ) ) {
 			self::$tasks = $tasks ?? new Tasks( __CLASS__ );
 		}
 
-		self::hook_process( true );
+		add_filter( 'wp_get_attachment_image_src', array( __CLASS__, 'hooker' ), 10, 3 );
 
 		return self::$tasks;
 
 	}
 
 
-	private static function hook_process( bool $enable ): void {
-
-		if ( $enable ) {
-			add_filter( 'wp_get_attachment_image_src', array( __CLASS__, 'hooker' ), 10, 3 );
-		} else {
-			remove_filter( 'wp_get_attachment_image_src', array( __CLASS__, 'hooker' ) );
-		}
-
-	}
-
-
 	public static function hooker( array $image, int $attachment_id, string $size ): array {
 
-		if ( ! is_admin() ) {
-			self::maybe_process( $attachment_id, $size );
-		}
-
-		return $image;
-
-	}
-
-
-	private static function maybe_process( int $attachment_id, string $size ): void {
-
-		if ( ! empty( self::$sizes[ $size ] ) && self::is_image( $attachment_id ) && ! self::is_processed( $attachment_id, $size ) ) {
+		if (
+			! empty( self::$sizes[ $size ] ) && ! is_admin() &&
+			self::is_image( $attachment_id ) && ! self::is_processed( $attachment_id, $size )
+		) {
 			self::lock_attachment( $attachment_id, $size );
 
 			if ( self::$tasks instanceof Tasks ) {
@@ -115,6 +68,8 @@ class Image {
 				self::process( $attachment_id, $size );
 			}
 		}
+
+		return $image;
 
 	}
 
