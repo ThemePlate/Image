@@ -9,18 +9,20 @@
 
 namespace ThemePlate;
 
+use Intervention\Image\Image as ImageImage;
 use Intervention\Image\ImageManager;
 
 class Image {
 
-	private static $sizes         = array();
-	private static $manipulations = array();
-	private static $storage       = array();
-	private static $manager;
-	private static $tasks;
+	private static array $sizes         = array();
+	private static array $manipulations = array();
+	private static array $storage       = array();
+
+	private static ?ImageManager $manager = null;
+	private static ?Tasks $tasks          = null;
 
 
-	public static function register( $name, $width, $height, $crop = false ) {
+	public static function register( string $name, int $width, int $height, bool $crop = false ): array {
 
 		self::$sizes[ $name ] = compact( 'width', 'height', 'crop' );
 
@@ -29,7 +31,7 @@ class Image {
 	}
 
 
-	public static function manipulate( $size, $filter, $args = null ) {
+	public static function manipulate( string $size, string $filter, $args = array() ): array {
 
 		self::$manipulations[ $size ][] = compact( 'filter', 'args' );
 
@@ -38,7 +40,7 @@ class Image {
 	}
 
 
-	public static function get_html( $attachment_id, $size ) {
+	public static function get_html( int $attachment_id, string $size ): string {
 
 		self::maybe_process( $attachment_id, $size );
 		self::hook_process( false );
@@ -52,7 +54,7 @@ class Image {
 	}
 
 
-	public static function get_url( $attachment_id, $size ) {
+	public static function get_url( int $attachment_id, string $size ): string {
 
 		self::maybe_process( $attachment_id, $size );
 		self::hook_process( false );
@@ -66,7 +68,7 @@ class Image {
 	}
 
 
-	public static function processor() {
+	public static function processor(): Tasks {
 
 		if ( ! self::$tasks instanceof Tasks ) {
 			self::$tasks = new Tasks( __CLASS__ );
@@ -83,7 +85,7 @@ class Image {
 	}
 
 
-	private static function hook_process( $enable ) {
+	private static function hook_process( bool $enable ): void {
 
 		if ( $enable ) {
 			add_filter( 'wp_get_attachment_image_src', array( __CLASS__, 'hooker' ), 10, 3 );
@@ -94,7 +96,7 @@ class Image {
 	}
 
 
-	public static function hooker( $image, $attachment_id, $size ) {
+	public static function hooker( array $image, int $attachment_id, string $size ): array {
 
 		if ( ! is_admin() ) {
 			self::maybe_process( $attachment_id, $size );
@@ -105,7 +107,7 @@ class Image {
 	}
 
 
-	private static function maybe_process( $attachment_id, $size ) {
+	private static function maybe_process( int $attachment_id, string $size ): void {
 
 		if ( self::is_image( $attachment_id ) && ! self::is_processed( $attachment_id, $size ) && ! empty( self::$sizes[ $size ] ) ) {
 			self::lock_attachment( $attachment_id, $size );
@@ -120,7 +122,7 @@ class Image {
 	}
 
 
-	public static function process( $attachment_id, $size ) {
+	public static function process( int $attachment_id, string $size ): bool {
 
 		$file = get_attached_file( $attachment_id );
 
@@ -163,7 +165,7 @@ class Image {
 	}
 
 
-	private static function is_image( $attachment_id ) {
+	private static function is_image( int $attachment_id ): bool {
 
 		if ( ! empty( self::$storage[ $attachment_id ] ) ) {
 			return true;
@@ -182,7 +184,7 @@ class Image {
 	}
 
 
-	private static function is_processed( $attachment_id, $size ) {
+	private static function is_processed( int $attachment_id, string $size ): bool {
 
 		$meta = self::get_meta( $attachment_id );
 
@@ -195,7 +197,7 @@ class Image {
 	}
 
 
-	private static function get_meta( $attachment_id ) {
+	private static function get_meta( int $attachment_id ): array {
 
 		if ( empty( self::$storage[ $attachment_id ] ) ) {
 			self::$storage[ $attachment_id ] = get_metadata( 'post', $attachment_id, '_wp_attachment_metadata', true );
@@ -206,7 +208,7 @@ class Image {
 	}
 
 
-	private static function update_meta( $attachment_id, $data ) {
+	private static function update_meta( int $attachment_id, array $data ): bool {
 
 		self::$storage[ $attachment_id ] = $data;
 
@@ -215,7 +217,7 @@ class Image {
 	}
 
 
-	private static function lock_attachment( $attachment_id, $size ) {
+	private static function lock_attachment( int $attachment_id, string $size ): void {
 
 		$meta = self::get_meta( $attachment_id );
 
@@ -226,11 +228,11 @@ class Image {
 	}
 
 
-	private static function do_manipulations( $image, $size ) {
+	private static function do_manipulations( ImageImage $image, string $size ): ImageImage {
 
 		if ( ! empty( self::$manipulations[ $size ] ) ) {
 			foreach ( self::$manipulations[ $size ] as $manipulation ) {
-				$image = call_user_func_array( array( $image, $manipulation['filter'] ), (array) $manipulation['args'] );
+				$image = call_user_func_array( array( $image, $manipulation['filter'] ), $manipulation['args'] );
 			}
 		}
 
@@ -239,22 +241,22 @@ class Image {
 	}
 
 
-	private static function filter( $image, $name, $args ) {
+	private static function filter( string $image, string $name, array $args ): ImageImage {
 
 		if ( ! self::$manager instanceof ImageManager ) {
 			self::$manager = new ImageManager( self::get_driver() );
 		}
 
-		if ( ! $image instanceof \Intervention\Image\Image ) {
+		if ( ! $image instanceof ImageImage ) {
 			$image = self::$manager->make( $image );
 		}
 
-		return call_user_func_array( array( $image, $name ), (array) $args );
+		return call_user_func_array( array( $image, $name ), $args );
 
 	}
 
 
-	private static function position( $size, $meta ) {
+	private static function position( array $size, array $meta ): array {
 
 		$size['crop'] = array_values( $size['crop'] );
 
@@ -286,7 +288,7 @@ class Image {
 	}
 
 
-	private static function get_driver() {
+	private static function get_driver(): array {
 
 		$config = array(
 			'driver' => 'gd',
