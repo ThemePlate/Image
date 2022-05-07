@@ -32,7 +32,7 @@ class Image {
 	}
 
 
-	public static function manipulate( string $size, string $filter, $args = array() ): array {
+	public static function manipulate( string $size, string $filter, array $args = array() ): array {
 
 		self::$manipulations[ $size ][] = compact( 'filter', 'args' );
 
@@ -54,7 +54,7 @@ class Image {
 	}
 
 
-	public static function hooker( array $image, int $attachment_id, string $size ): array {
+	public static function hooker( $image, int $attachment_id, string $size ): array {
 
 		if ( ! empty( self::$sizes[ $size ] ) && ! is_admin() && ! self::is_processed( $attachment_id, $size ) ) {
 			self::lock_attachment( $attachment_id, $size );
@@ -66,7 +66,7 @@ class Image {
 			}
 		}
 
-		return $image;
+		return false === $image ? array() : $image;
 
 	}
 
@@ -134,7 +134,9 @@ class Image {
 	private static function get_meta( int $attachment_id ): array {
 
 		if ( empty( self::$storage[ $attachment_id ] ) ) {
-			self::$storage[ $attachment_id ] = get_metadata( 'post', $attachment_id, '_wp_attachment_metadata', true );
+			$meta = get_metadata( 'post', $attachment_id, '_wp_attachment_metadata', true );
+
+			self::$storage[ $attachment_id ] = $meta ?: array();
 		}
 
 		return self::$storage[ $attachment_id ];
