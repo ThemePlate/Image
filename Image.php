@@ -11,6 +11,7 @@ namespace ThemePlate;
 
 use Intervention\Image\Image as ImageImage;
 use Intervention\Image\ImageManager;
+use ThemePlate\Process\Tasks;
 
 class Image {
 
@@ -68,14 +69,10 @@ class Image {
 	}
 
 
-	public static function processor(): Tasks {
+	public static function processor( Tasks $tasks = null ): ?Tasks {
 
-		if ( ! self::$tasks instanceof Tasks ) {
-			self::$tasks = new Tasks( __CLASS__ );
-		}
-
-		if ( ! defined( 'DOING_AJAX' ) ) {
-			add_action( 'shutdown', array( self::$tasks, 'execute' ) );
+		if ( ! self::$tasks instanceof Tasks && class_exists( Tasks::class ) ) {
+			self::$tasks = $tasks ?? new Tasks( __CLASS__ );
 		}
 
 		self::hook_process( true );

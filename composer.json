@@ -10,8 +10,10 @@
 	],
 	"require": {
 		"php": "^7.4|^8.0",
-		"intervention/image": "^2.5",
-		"themeplate/process": "^1.0"
+		"intervention/image": "^2.7"
+	},
+	"suggest": {
+	  "themeplate/process": "^2.4"
 	},
 	"autoload": {
 		"psr-4": {
