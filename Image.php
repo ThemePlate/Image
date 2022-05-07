@@ -56,10 +56,7 @@ class Image {
 
 	public static function hooker( array $image, int $attachment_id, string $size ): array {
 
-		if (
-			! empty( self::$sizes[ $size ] ) && ! is_admin() &&
-			self::is_image( $attachment_id ) && ! self::is_processed( $attachment_id, $size )
-		) {
+		if ( ! empty( self::$sizes[ $size ] ) && ! is_admin() && ! self::is_processed( $attachment_id, $size ) ) {
 			self::lock_attachment( $attachment_id, $size );
 
 			if ( self::$tasks instanceof Tasks ) {
@@ -117,28 +114,13 @@ class Image {
 	}
 
 
-	private static function is_image( int $attachment_id ): bool {
-
-		if ( ! empty( self::$storage[ $attachment_id ] ) ) {
-			return true;
-		}
-
-		$file = get_attached_file( $attachment_id );
-
-		if ( ! $file || ! file_exists( $file ) ) {
-			return false;
-		}
-
-		$meta = self::get_meta( $attachment_id );
-
-		return ! empty( $meta );
-
-	}
-
-
 	private static function is_processed( int $attachment_id, string $size ): bool {
 
 		$meta = self::get_meta( $attachment_id );
+
+		if ( empty( $meta ) ) {
+			return true;
+		}
 
 		if ( isset( $meta['tpi_lock'][ $size ] ) ) {
 			return true;
