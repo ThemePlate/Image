@@ -109,7 +109,7 @@ class Image {
 
 	private static function maybe_process( int $attachment_id, string $size ): void {
 
-		if ( self::is_image( $attachment_id ) && ! self::is_processed( $attachment_id, $size ) && ! empty( self::$sizes[ $size ] ) ) {
+		if ( ! empty( self::$sizes[ $size ] ) && self::is_image( $attachment_id ) && ! self::is_processed( $attachment_id, $size ) ) {
 			self::lock_attachment( $attachment_id, $size );
 
 			if ( self::$tasks instanceof Tasks ) {
@@ -139,7 +139,7 @@ class Image {
 		}
 
 		if ( 'resize' === $type ) {
-			$args[] = function( $constraint ) {
+			$args[] = static function( $constraint ) {
 				$constraint->aspectRatio();
 				$constraint->upsize();
 			};
@@ -247,9 +247,7 @@ class Image {
 			self::$manager = new ImageManager( self::get_driver() );
 		}
 
-		if ( ! $image instanceof ImageImage ) {
-			$image = self::$manager->make( $image );
-		}
+		$image = self::$manager->make( $image );
 
 		return call_user_func_array( array( $image, $name ), $args );
 
@@ -260,8 +258,8 @@ class Image {
 
 		$size['crop'] = array_values( $size['crop'] );
 
-		$crop_x = $size['crop'][0];
-		$crop_y = $size['crop'][1];
+		[ $crop_x, $crop_y ] = $size['crop']; // phpcs:ignore Generic.Arrays.DisallowShortArraySyntax
+
 		$crop_w = $size['width'];
 		$crop_h = $size['height'];
 		$orig_w = $meta['width'];
@@ -294,7 +292,7 @@ class Image {
 			'driver' => 'gd',
 		);
 
-		if ( extension_loaded( 'imagick' ) && class_exists( 'Imagick', false ) ) {
+		if ( class_exists( 'Imagick', false ) || extension_loaded( 'imagick' ) ) {
 			$config['driver'] = 'imagick';
 		}
 
