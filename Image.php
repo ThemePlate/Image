@@ -11,6 +11,7 @@ namespace ThemePlate;
 
 use Intervention\Image\Image as ImageImage;
 use Intervention\Image\ImageManager;
+use ThemePlate\Image\Filter;
 use ThemePlate\Process\Tasks;
 
 class Image {
@@ -26,6 +27,8 @@ class Image {
 	public static function register( string $name, int $width, int $height, bool $crop = false ): array {
 
 		self::$sizes[ $name ] = compact( 'width', 'height', 'crop' );
+
+		self::$manipulations[ $name ] = array();
 
 		return self::$sizes;
 
@@ -96,8 +99,17 @@ class Image {
 
 		unset( $args['crop'] );
 
-		$image = self::filter( $file, $type, $args );
-		$image = self::do_manipulations( $image, $size );
+		$manipulations = array_merge(
+			array(
+				array(
+					'filter' => $type,
+					'args'   => $args,
+				),
+			),
+			self::$manipulations[ $size ]
+		);
+
+		$image = self::filter( $file, $manipulations );
 		$info  = pathinfo( $file );
 		$name  = $info['filename'] . '-' . $size . '.' . $info['extension'];
 
@@ -164,20 +176,7 @@ class Image {
 	}
 
 
-	private static function do_manipulations( ImageImage $image, string $size ): ImageImage {
-
-		if ( ! empty( self::$manipulations[ $size ] ) ) {
-			foreach ( self::$manipulations[ $size ] as $manipulation ) {
-				$image = call_user_func_array( array( $image, $manipulation['filter'] ), $manipulation['args'] );
-			}
-		}
-
-		return $image;
-
-	}
-
-
-	private static function filter( string $image, string $name, array $args ): ImageImage {
+	private static function filter( string $image, array $manipulations ): ImageImage {
 
 		if ( ! self::$manager instanceof ImageManager ) {
 			self::$manager = new ImageManager( self::get_driver() );
@@ -185,7 +184,7 @@ class Image {
 
 		$image = self::$manager->make( $image );
 
-		return call_user_func_array( array( $image, $name ), $args );
+		return $image->filter( new Filter( $manipulations ) );
 
 	}
 

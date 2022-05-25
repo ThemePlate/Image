@@ -17,7 +17,10 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"ThemePlate\\": ""
-		}
+			"ThemePlate\\Image\\": "src"
+		},
+		"files": [
+			"Image.php"
+		]
 	}
 }
