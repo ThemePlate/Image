@@ -57,7 +57,15 @@ class Image {
 	}
 
 
-	public static function hooker( $image, int $attachment_id, string $size ): array {
+	/**
+	 * @param array|false  $image
+	 * @param string|int[] $size
+	 */
+	public static function hooker( $image, int $attachment_id, $size ): array {
+
+		if ( is_array( $size ) ) {
+			return $image;
+		}
 
 		if ( ! empty( self::$sizes[ $size ] ) && ! is_admin() && ! self::is_processed( $attachment_id, $size ) ) {
 			self::lock_attachment( $attachment_id, $size );
