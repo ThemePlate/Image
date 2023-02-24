@@ -57,6 +57,13 @@ class Image {
 	}
 
 
+	public static function manager( ImageManager $manager ): void {
+
+		self::$manager = $manager;
+
+	}
+
+
 	/**
 	 * @param array|false  $image
 	 * @param string|int[] $size
