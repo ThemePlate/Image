@@ -76,21 +76,17 @@ class Image {
 		if ( ! empty( self::$sizes[ $size ] ) && ! is_admin() && ! MetaHelper::is_processed( $attachment_id, $size ) ) {
 			MetaHelper::lock_attachment( $attachment_id, $size );
 
+			$callback_func = array( new Handler( self::$manager ), 'process' );
+			$callback_args = array( $attachment_id, $size, self::$sizes[ $size ], self::$manipulations[ $size ] );
+
 			if ( self::$tasks instanceof Tasks ) {
-				self::$tasks->add( array( __CLASS__, 'process' ), array( $attachment_id, $size ) );
+				self::$tasks->add( $callback_func, $callback_args );
 			} else {
-				self::process( $attachment_id, $size );
+				call_user_func_array( $callback_func, $callback_args );
 			}
 		}
 
 		return false === $image ? array() : $image;
-
-	}
-
-
-	public static function process( int $attachment_id, string $size ): bool {
-
-		return ( new Handler( self::$manager ) )->process( $attachment_id, $size, self::$sizes[ $size ], self::$manipulations[ $size ] );
 
 	}
 

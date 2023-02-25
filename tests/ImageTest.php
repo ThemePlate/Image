@@ -110,24 +110,4 @@ class ImageTest extends TestCase {
 
 		$this->assertSame( $expected, $actual );
 	}
-
-	public function test_process() {
-		expect( 'get_attached_file' )->twice()->andReturn( false, __DIR__ . '/screenshot.png' );
-		expect( 'get_metadata' )->once()->andReturn( array() );
-		expect( 'update_metadata' )->once()->andReturn( true );
-
-		Image::register( 'processed', 160, 120 );
-		Image::manipulate( 'processed', 'blur' );
-
-		self::assertFalse( Image::process( 0, 'processed' ) ); // Unknown file path
-		// phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
-		@unlink( __DIR__ . '/screenshot-processed.png' ); // Remove processed image
-		self::assertTrue( Image::process( 0, 'processed' ) );
-		self::assertTrue( file_exists( __DIR__ . '/screenshot-processed.png' ) );
-
-		list( $width, $height ) = getimagesize( __DIR__ . '/screenshot-processed.png' );
-
-		$this->assertSame( 160, $width );
-		$this->assertSame( 120, $height );
-	}
 }
