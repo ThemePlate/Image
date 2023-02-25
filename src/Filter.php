@@ -28,6 +28,10 @@ class Filter implements FilterInterface {
 
 		if ( ! empty( $this->manipulations ) ) {
 			foreach ( $this->manipulations as $manipulation ) {
+				if ( ! isset( $manipulation['filter'], $manipulation['args'] ) ) {
+					continue;
+				}
+
 				$image = call_user_func_array( array( $image, $manipulation['filter'] ), $manipulation['args'] );
 			}
 		}

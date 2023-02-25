@@ -8,6 +8,19 @@ namespace ThemePlate\Image;
 
 class ProcessHelper {
 
+	public static function parse_args( array $args ): array {
+
+		return array_merge(
+			array(
+				'width'  => 0,
+				'height' => 0,
+				'crop'   => false,
+			),
+			$args
+		);
+
+	}
+
 	public static function get_driver(): array {
 
 		$config = array(

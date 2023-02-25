@@ -35,6 +35,7 @@ class Handler {
 			return false;
 		}
 
+		$args = ProcessHelper::parse_args( $args );
 		$type = $args['crop'] ? 'crop' : 'resize';
 		$meta = MetaHelper::get_meta( $this->attachment_id );
 
