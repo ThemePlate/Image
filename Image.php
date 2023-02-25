@@ -9,11 +9,9 @@
 
 namespace ThemePlate;
 
-use Intervention\Image\Image as ImageImage;
 use Intervention\Image\ImageManager;
-use ThemePlate\Image\Filter;
-use ThemePlate\Image\ProcessHelper;
 use ThemePlate\Image\MetaHelper;
+use ThemePlate\Image\Handler;
 use ThemePlate\Process\Tasks;
 
 class Image {
@@ -92,65 +90,7 @@ class Image {
 
 	public static function process( int $attachment_id, string $size ): bool {
 
-		$file = get_attached_file( $attachment_id );
-
-		if ( ! $file || ! file_exists( $file ) ) {
-			return false;
-		}
-
-		$args = self::$sizes[ $size ];
-		$type = $args['crop'] ? 'crop' : 'resize';
-		$meta = MetaHelper::get_meta( $attachment_id );
-
-		if ( is_array( $args['crop'] ) ) {
-			$args += ProcessHelper::position( $args, $meta );
-		}
-
-		if ( 'resize' === $type ) {
-			$args[] = static function( $constraint ) {
-				$constraint->aspectRatio();
-				$constraint->upsize();
-			};
-		}
-
-		unset( $args['crop'] );
-
-		$manipulations = array_merge(
-			array(
-				array(
-					'filter' => $type,
-					'args'   => $args,
-				),
-			),
-			self::$manipulations[ $size ]
-		);
-
-		$image = self::filter( $file, $manipulations );
-		$info  = pathinfo( $file );
-		$name  = $info['filename'] . '-' . $size . '.' . $info['extension'];
-
-		$meta['sizes'][ $size ]['file']      = $name;
-		$meta['sizes'][ $size ]['width']     = $image->width();
-		$meta['sizes'][ $size ]['height']    = $image->height();
-		$meta['sizes'][ $size ]['mime-type'] = $image->mime();
-
-		$image->save( $info['dirname'] . '/' . $name, 100 );
-		unset( $meta['tpi_lock'][ $size ] );
-
-		return MetaHelper::update_meta( $attachment_id, $meta );
-
-	}
-
-
-	private static function filter( string $image, array $manipulations ): ImageImage {
-
-		if ( ! self::$manager instanceof ImageManager ) {
-			self::$manager = new ImageManager( ProcessHelper::get_driver() );
-		}
-
-		$image = self::$manager->make( $image );
-
-		return $image->filter( new Filter( $manipulations ) );
+		return ( new Handler( self::$manager ) )->process( $attachment_id, $size, self::$sizes[ $size ], self::$manipulations[ $size ] );
 
 	}
 
