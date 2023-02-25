@@ -21,6 +21,20 @@ class ProcessHelper {
 
 	}
 
+
+	public static function prepare( array &$data ) {
+
+		$data = array_merge(
+			array(
+				'size_arguments' => array(),
+				'manipulations'  => array(),
+			),
+			$data
+		);
+
+	}
+
+
 	public static function get_driver(): array {
 
 		$config = array(

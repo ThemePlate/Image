@@ -28,17 +28,19 @@ class HandlerTest extends TestCase {
 		expect( 'update_metadata' )->once()->andReturn( true );
 
 		$handler = new Handler( 9 );
-		$args = array(
+		$args    = array(
 			'processed',
 			array(
-				'width'  => 160,
-				'height' => 120,
-				'crop'   => false,
-			),
-			array(
-				array(
-					'filter' => 'blur',
-					'args'   => array(),
+				'size_arguments' => array(
+					'width'  => 160,
+					'height' => 120,
+					'crop'   => false,
+				),
+				'manipulations'  => array(
+					array(
+						'filter' => 'blur',
+						'args'   => array(),
+					),
 				),
 			),
 		);

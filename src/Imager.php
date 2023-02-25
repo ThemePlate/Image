@@ -23,7 +23,7 @@ class Imager {
 
 	public function register( string $name, int $width, int $height, bool $crop = false ): Imager {
 
-		$this->storage[ $name ]['size_args'] = compact( 'width', 'height', 'crop' );
+		$this->storage[ $name ]['size_arguments'] = compact( 'width', 'height', 'crop' );
 
 		return $this;
 
@@ -71,7 +71,7 @@ class Imager {
 			MetaHelper::lock_attachment( $attachment_id, $size );
 
 			$callback_func = array( new Handler( $attachment_id, $this->manager ), 'process' );
-			$callback_args = array( $size, $this->storage[ $size ]['size_args'], $this->storage[ $size ]['manipulations'] );
+			$callback_args = array( $size, $this->storage[ $size ] );
 
 			if ( $this->tasks instanceof Tasks ) {
 				$this->tasks->add( $callback_func, $callback_args );

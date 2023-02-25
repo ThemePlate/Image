@@ -27,7 +27,7 @@ class Handler {
 	}
 
 
-	public function process( string $size, array $args, array $manipulations ): bool {
+	public function process( string $size, array $data ): bool {
 
 		$file = get_attached_file( $this->attachment_id );
 
@@ -35,7 +35,9 @@ class Handler {
 			return false;
 		}
 
-		$args = ProcessHelper::parse_args( $args );
+		ProcessHelper::prepare( $data );
+
+		$args = ProcessHelper::parse_args( $data['size_arguments'] );
 		$type = $args['crop'] ? 'crop' : 'resize';
 		$meta = MetaHelper::get_meta( $this->attachment_id );
 
@@ -53,14 +55,14 @@ class Handler {
 		unset( $args['crop'] );
 
 		array_unshift(
-			$manipulations,
+			$data['manipulations'],
 			array(
 				'filter' => $type,
 				'args'   => $args,
 			)
 		);
 
-		$image = $this->filter( $file, $manipulations );
+		$image = $this->filter( $file, $data['manipulations'] );
 		$info  = pathinfo( $file );
 		$name  = $info['filename'] . '-' . $size . '.' . $info['extension'];
 

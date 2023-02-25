@@ -38,7 +38,7 @@ class ImagerTest extends TestCase {
 		$actual = $imager->dump();
 
 		$this->assertArrayHasKey( $name, $actual );
-		$this->assertSame( compact( 'width', 'height', 'crop' ), $actual[ $name ]['size_args'] );
+		$this->assertSame( compact( 'width', 'height', 'crop' ), $actual[ $name ]['size_arguments'] );
 	}
 
 	public function for_manipulate(): array {
