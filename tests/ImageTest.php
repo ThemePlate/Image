@@ -33,10 +33,11 @@ class ImageTest extends TestCase {
 
 	/** @dataProvider for_register */
 	public function test_register( string $name, int $width, int $height, bool $crop ): void {
-		$actual = Image::register( $name, $width, $height, $crop );
+		$imager = Image::register( $name, $width, $height, $crop );
+		$actual = $imager->dump();
 
 		$this->assertArrayHasKey( $name, $actual );
-		$this->assertSame( compact( 'width', 'height', 'crop' ), $actual[ $name ] );
+		$this->assertSame( compact( 'width', 'height', 'crop' ), $actual[ $name ]['size_args'] );
 	}
 
 	public function for_manipulate(): array {
@@ -49,10 +50,11 @@ class ImageTest extends TestCase {
 
 	/** @dataProvider for_manipulate */
 	public function test_manipulate( string $size, string $filter, array $args ): void {
-		$actual = Image::manipulate( $size, $filter, $args );
+		$imager = Image::manipulate( $size, $filter, $args );
+		$actual = $imager->dump();
 
 		$this->assertArrayHasKey( $size, $actual );
-		$this->assertSame( compact( 'filter', 'args' ), $actual[ $size ][ $this->dataName() ] );
+		$this->assertSame( compact( 'filter', 'args' ), $actual[ $size ]['manipulations'][ $this->dataName() ] );
 	}
 
 	public function for_processor(): array {
@@ -66,7 +68,7 @@ class ImageTest extends TestCase {
 	public function test_processor( bool $with_tasks ): void {
 		$actual = Image::processor( $with_tasks ? $this->getMockBuilder( 'ThemePlate\Process\Tasks' )->getMock() : null );
 
-		$this->assertSame( 10, has_filter( 'wp_get_attachment_image_src', array( Image::class, 'hooker' ) ) );
+		$this->assertSame( 10, has_filter( 'wp_get_attachment_image_src', 'ThemePlate\Image\Imager->action()' ) );
 
 		if ( $with_tasks ) {
 			$this->assertInstanceOf( Tasks::class, $actual );
@@ -75,7 +77,7 @@ class ImageTest extends TestCase {
 		}
 	}
 
-	public function for_hooker(): array {
+	public function for_action(): array {
 		return array(
 			'with_array_of_ids'  => array(
 				array( 1, 2 ),
@@ -100,12 +102,12 @@ class ImageTest extends TestCase {
 		);
 	}
 
-	/** @dataProvider for_hooker */
-	public function test_hooker( $image, $size, bool $with_data ): void {
+	/** @dataProvider for_action */
+	public function test_action( $image, $size, bool $with_data ): void {
 		expect( 'is_admin' )->andReturn( true );
 
 		$expected = $with_data ? $image : array();
-		$actual   = Image::hooker( $image, 0, $size );
+		$actual   = Image::action( $image, 0, $size );
 
 		$this->assertSame( $expected, $actual );
 	}
