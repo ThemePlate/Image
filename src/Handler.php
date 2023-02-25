@@ -48,14 +48,12 @@ class Handler {
 
 		unset( $args['crop'] );
 
-		$manipulations = array_merge(
+		array_unshift(
+			$manipulations,
 			array(
-				array(
-					'filter' => $type,
-					'args'   => $args,
-				),
-			),
-			$manipulations
+				'filter' => $type,
+				'args'   => $args,
+			)
 		);
 
 		$image = $this->filter( $file, $manipulations );

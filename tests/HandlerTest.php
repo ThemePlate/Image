@@ -7,7 +7,6 @@
 namespace Tests;
 
 use Brain\Monkey;
-use Intervention\Image\ImageManager;
 use PHPUnit\Framework\TestCase;
 use ThemePlate\Image\Handler;
 use function Brain\Monkey\Functions\expect;
@@ -30,7 +29,7 @@ class HandlerTest extends TestCase {
 
 		$handler = new Handler();
 		$args = array(
-			0,
+			9,
 			'processed',
 			array(
 				'width'  => 160,

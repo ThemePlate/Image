@@ -7,7 +7,6 @@
 namespace Tests;
 
 use Brain\Monkey;
-use Intervention\Image\ImageManager;
 use PHPUnit\Framework\TestCase;
 use ThemePlate\Image;
 use ThemePlate\Process\Tasks;

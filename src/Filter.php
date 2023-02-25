@@ -10,7 +10,7 @@
 namespace ThemePlate\Image;
 
 use Intervention\Image\Filters\FilterInterface;
-use Intervention\Image\Image as ImageImage;
+use Intervention\Image\Image;
 
 class Filter implements FilterInterface {
 
@@ -24,7 +24,7 @@ class Filter implements FilterInterface {
 	}
 
 
-	public function applyFilter( ImageImage $image ): ImageImage {
+	public function applyFilter( Image $image ): Image {
 
 		if ( ! empty( $this->manipulations ) ) {
 			foreach ( $this->manipulations as $manipulation ) {

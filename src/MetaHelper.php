@@ -33,7 +33,11 @@ class MetaHelper {
 		if ( empty( self::$storage[ $attachment_id ] ) ) {
 			$meta = get_metadata( 'post', $attachment_id, '_wp_attachment_metadata', true );
 
-			self::$storage[ $attachment_id ] = $meta ?: array();
+			if ( $meta ) {
+				self::$storage[ $attachment_id ] = $meta;
+			} else {
+				self::$storage[ $attachment_id ] = array();
+			}
 		}
 
 		return self::$storage[ $attachment_id ];
@@ -59,4 +63,5 @@ class MetaHelper {
 		self::update_meta( $attachment_id, $meta );
 
 	}
+
 }
