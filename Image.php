@@ -76,8 +76,8 @@ class Image {
 		if ( ! empty( self::$sizes[ $size ] ) && ! is_admin() && ! MetaHelper::is_processed( $attachment_id, $size ) ) {
 			MetaHelper::lock_attachment( $attachment_id, $size );
 
-			$callback_func = array( new Handler( self::$manager ), 'process' );
-			$callback_args = array( $attachment_id, $size, self::$sizes[ $size ], self::$manipulations[ $size ] );
+			$callback_func = array( new Handler( $attachment_id, self::$manager ), 'process' );
+			$callback_args = array( $size, self::$sizes[ $size ], self::$manipulations[ $size ] );
 
 			if ( self::$tasks instanceof Tasks ) {
 				self::$tasks->add( $callback_func, $callback_args );

@@ -14,26 +14,29 @@ use Intervention\Image\ImageManager;
 
 class Handler {
 
+	protected int $attachment_id;
 	protected ImageManager $manager;
 
 
-	public function __construct( ImageManager $manager = null ) {
+	public function __construct( int $attachment_id, ImageManager $manager = null ) {
+
+		$this->attachment_id = $attachment_id;
 
 		$this->manager = $manager ?? new ImageManager( ProcessHelper::get_driver() );
 
 	}
 
 
-	public function process( int $attachment_id, string $size, array $args, array $manipulations ): bool {
+	public function process( string $size, array $args, array $manipulations ): bool {
 
-		$file = get_attached_file( $attachment_id );
+		$file = get_attached_file( $this->attachment_id );
 
 		if ( ! $file || ! file_exists( $file ) ) {
 			return false;
 		}
 
 		$type = $args['crop'] ? 'crop' : 'resize';
-		$meta = MetaHelper::get_meta( $attachment_id );
+		$meta = MetaHelper::get_meta( $this->attachment_id );
 
 		if ( is_array( $args['crop'] ) ) {
 			$args += ProcessHelper::position( $args, $meta );
@@ -68,7 +71,7 @@ class Handler {
 		$image->save( $info['dirname'] . '/' . $name, 100 );
 		unset( $meta['tpi_lock'][ $size ] );
 
-		return MetaHelper::update_meta( $attachment_id, $meta );
+		return MetaHelper::update_meta( $this->attachment_id, $meta );
 
 	}
 

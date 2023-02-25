@@ -27,9 +27,8 @@ class HandlerTest extends TestCase {
 		expect( 'get_metadata' )->once()->andReturn( array() );
 		expect( 'update_metadata' )->once()->andReturn( true );
 
-		$handler = new Handler();
+		$handler = new Handler( 9 );
 		$args = array(
-			9,
 			'processed',
 			array(
 				'width'  => 160,
