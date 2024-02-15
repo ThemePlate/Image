@@ -32,7 +32,7 @@ class Filter implements FilterInterface {
 					continue;
 				}
 
-				$image = call_user_func_array( array( $image, $manipulation['filter'] ), $manipulation['args'] );
+				$image = call_user_func_array( array( $image, $manipulation['filter'] ), array_values( $manipulation['args'] ) );
 			}
 		}
 
