@@ -8,6 +8,7 @@ namespace Tests;
 
 use ThemePlate\Image\ProcessHelper;
 use PHPUnit\Framework\TestCase;
+use function Brain\Monkey\Functions\expect;
 
 class ProcessHelperTest extends TestCase {
 	public function test_get_driver(): void {
@@ -100,5 +101,21 @@ class ProcessHelperTest extends TestCase {
 				)
 			)
 		);
+	}
+
+	public function test_forced_refresh(): void {
+		expect( 'get_metadata' )->once()->andReturn( array() );
+		expect( 'update_metadata' )->once()->andReturn( true );
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		global $_REQUEST;
+
+		$_REQUEST['tpi_refresh'] = '123';
+
+		ProcessHelper::maybe_force_refresh( $_REQUEST['tpi_refresh'], 'test' );
+		$this->assertTrue( true );
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		unset( $_REQUEST['tpi_refresh'] );
 	}
 }

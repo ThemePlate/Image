@@ -81,4 +81,27 @@ class ProcessHelper {
 
 	}
 
+
+	public static function maybe_force_refresh( int $attachment_id, string $size ): void {
+
+		if ( self::forced_refresh( $attachment_id ) ) {
+			MetaHelper::unlock_attachment( $attachment_id, $size );
+		}
+
+	}
+
+
+	protected static function forced_refresh( int $attachment_id ): bool {
+
+		// phpcs:ignore WordPress.Security.NonceVerification
+		if ( empty( $_REQUEST['tpi_refresh'] ) ) {
+			return false;
+		}
+
+		// phpcs:ignore WordPress.Security.NonceVerification
+		return in_array( (string) $attachment_id, (array) $_REQUEST['tpi_refresh'], true );
+
+
+	}
+
 }

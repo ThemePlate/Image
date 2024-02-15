@@ -26,6 +26,12 @@ $processor->report( function( $output ) {
 // - get_the_post_thumbnail_url
 ```
 
+### Force refresh image/s
+
+`<WP_HOME>/?tpi_refresh=<attachment_id>`
+
+`<WP_HOME>/?tpi_refresh[]=<id1>&tcs_refresh[]=<id2>`
+
 ### Image::register( $name, $width, $height )
 
 - **$name** *(string)(Required)* Size identifier
@@ -38,7 +44,7 @@ $processor->report( function( $output ) {
 - **$filter** *(string)(Required)* Filter to apply
 - **$args** *(array)(Optional)* Parameters to pass. Default `null`
 
-> See available filters in https://image.intervention.io/v2/
+> See available filters in <https://image.intervention.io/v2/>
 
 ### Image::processor()
 

@@ -64,4 +64,16 @@ class MetaHelper {
 
 	}
 
+
+	public static function unlock_attachment( int $attachment_id, string $size ): void {
+
+		$meta = self::get_meta( $attachment_id );
+
+		unset( $meta['sizes'][ $size ] );
+		unset( $meta['tpi_lock'][ $size ] );
+
+		self::update_meta( $attachment_id, $meta );
+
+	}
+
 }
