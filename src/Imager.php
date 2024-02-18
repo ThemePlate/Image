@@ -60,8 +60,10 @@ class Imager {
 	/**
 	 * @param array|false  $image
 	 * @param string|int[] $size
+	 *
+	 * @return array|false
 	 */
-	public function action( $image, int $attachment_id, $size ): array {
+	public function action( $image, int $attachment_id, $size ) {
 
 		if ( is_array( $size ) ) {
 			return $image;
@@ -82,7 +84,7 @@ class Imager {
 			}
 		}
 
-		return false === $image ? array() : $image;
+		return $image;
 
 	}
 
