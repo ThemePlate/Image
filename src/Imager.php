@@ -69,7 +69,7 @@ class Imager {
 
 		ProcessHelper::maybe_force_refresh( $attachment_id, $size );
 
-		if ( ! empty( $this->storage[ $size ] ) && ! is_admin() && ! MetaHelper::is_processed( $attachment_id, $size ) ) {
+		if ( ! is_admin() && ! empty( $this->storage[ $size ] ) && ! MetaHelper::is_processed( $attachment_id, $size ) ) {
 			MetaHelper::lock_attachment( $attachment_id, $size );
 
 			$callback_func = array( new Handler( $attachment_id, $this->manager ), 'process' );
