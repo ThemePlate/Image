@@ -46,7 +46,7 @@ class HandlerTest extends TestCase {
 		);
 
 		self::assertFalse( call_user_func_array( array( $handler, 'process' ), $args ) ); // Unknown file path
-		// phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged
+		// phpcs:ignore WordPress.PHP.NoSilencedErrors.Discouraged, WordPress.WP.AlternativeFunctions.unlink_unlink
 		@unlink( __DIR__ . '/screenshot-processed.png' ); // Remove processed image
 		self::assertTrue( call_user_func_array( array( $handler, 'process' ), $args ) );
 		self::assertTrue( file_exists( __DIR__ . '/screenshot-processed.png' ) );

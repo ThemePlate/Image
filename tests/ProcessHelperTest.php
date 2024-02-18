@@ -13,6 +13,7 @@ use function Brain\Monkey\Functions\expect;
 class ProcessHelperTest extends TestCase {
 	public function test_get_driver(): void {
 		$this->assertSame( 'gd', ProcessHelper::get_driver() );
+		// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
 		// $this->assertSame( 'imagick', ProcessHelper::get_driver() );
 	}
 
@@ -112,6 +113,7 @@ class ProcessHelperTest extends TestCase {
 
 		$_REQUEST['tpi_refresh'] = '123';
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		ProcessHelper::maybe_force_refresh( $_REQUEST['tpi_refresh'], 'test' );
 		$this->assertTrue( true );
 

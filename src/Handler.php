@@ -54,7 +54,7 @@ class Handler {
 		}
 
 		if ( 'resize' === $type ) {
-			$args[] = static function( $constraint ) {
+			$args[] = static function ( $constraint ) {
 				$constraint->aspectRatio();
 				$constraint->upsize();
 			};

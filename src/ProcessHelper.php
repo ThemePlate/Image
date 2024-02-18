@@ -22,7 +22,7 @@ class ProcessHelper {
 	}
 
 
-	public static function prepare( array &$data ) {
+	public static function prepare( array &$data ): void {
 
 		$data = array_merge(
 			array(
