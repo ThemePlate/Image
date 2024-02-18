@@ -12,8 +12,8 @@ use function Brain\Monkey\Functions\expect;
 
 class ProcessHelperTest extends TestCase {
 	public function test_get_driver(): void {
-		$this->assertSame( array( 'driver' => 'gd' ), ProcessHelper::get_driver() );
-		// $this->assertSame( array( 'driver' => 'imagick' ), ProcessHelper::get_driver() );
+		$this->assertSame( 'gd', ProcessHelper::get_driver() );
+		// $this->assertSame( 'imagick', ProcessHelper::get_driver() );
 	}
 
 	public function for_position(): array {

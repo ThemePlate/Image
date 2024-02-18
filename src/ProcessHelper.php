@@ -35,14 +35,12 @@ class ProcessHelper {
 	}
 
 
-	public static function get_driver(): array {
+	public static function get_driver(): string {
 
-		$config = array(
-			'driver' => 'gd',
-		);
+		$config = 'gd';
 
 		if ( class_exists( 'Imagick', false ) || extension_loaded( 'imagick' ) ) {
-			$config['driver'] = 'imagick';
+			$config = 'imagick';
 		}
 
 		return $config;

@@ -22,7 +22,15 @@ class Handler {
 
 		$this->attachment_id = $attachment_id;
 
-		$this->manager = $manager ?? new ImageManager( ProcessHelper::get_driver() );
+		$driver = ProcessHelper::get_driver();
+
+		if ( PHP_VERSION_ID >= 80000 ) {
+			$driver = sprintf( 'Intervention\Image\Drivers\%s\Driver', ucfirst( $driver ) );
+		} else {
+			$driver = compact( 'driver' );
+		}
+
+		$this->manager = $manager ?? new ImageManager( $driver );
 
 	}
 
@@ -54,6 +62,10 @@ class Handler {
 
 		unset( $args['crop'] );
 
+		if ( 'resize' === $type && PHP_VERSION_ID >= 80000 ) {
+			$type = 'scale';
+		}
+
 		array_unshift(
 			$data['manipulations'],
 			array(
@@ -69,7 +81,7 @@ class Handler {
 		$meta['sizes'][ $size ]['file']      = $name;
 		$meta['sizes'][ $size ]['width']     = $image->width();
 		$meta['sizes'][ $size ]['height']    = $image->height();
-		$meta['sizes'][ $size ]['mime-type'] = $image->mime();
+		$meta['sizes'][ $size ]['mime-type'] = PHP_VERSION_ID >= 80000 ? $image->origin()->mediaType() : $image->mime();
 
 		$image->save( $info['dirname'] . '/' . $name, 100 );
 		unset( $meta['tpi_lock'][ $size ] );
@@ -80,6 +92,12 @@ class Handler {
 
 
 	protected function filter( string $image, array $manipulations ): Image {
+
+		if ( PHP_VERSION_ID >= 80000 ) {
+			$image = $this->manager->read( $image );
+
+			return $image->modify( new Modify( $manipulations ) );
+		}
 
 		$image = $this->manager->make( $image );
 
