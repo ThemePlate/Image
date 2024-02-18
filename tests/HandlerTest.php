@@ -39,7 +39,7 @@ class HandlerTest extends TestCase {
 				'manipulations'  => array(
 					array(
 						'filter' => 'blur',
-						'args'   => array(),
+						'args'   => array( 1 ),
 					),
 				),
 			),

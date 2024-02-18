@@ -99,6 +99,12 @@ class ProcessHelper {
 		// phpcs:ignore WordPress.Security.NonceVerification
 		return in_array( (string) $attachment_id, (array) $_REQUEST['tpi_refresh'], true );
 
+	}
+
+
+	public static function using_v8(): bool {
+
+		return PHP_VERSION_ID >= 80000;
 
 	}
 
