@@ -82,6 +82,10 @@ class ProcessHelper {
 
 	public static function maybe_force_refresh( int $attachment_id, string $size ): void {
 
+		if ( ! is_user_logged_in() ) {
+			return;
+		}
+
 		if ( self::forced_refresh( $attachment_id ) ) {
 			MetaHelper::unlock_attachment( $attachment_id, $size );
 		}

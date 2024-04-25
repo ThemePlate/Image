@@ -15,7 +15,7 @@ Image::manipulate( 'another_size', 'blur', 20 );
 $processor = Image::processor();
 
 $processor->report( function( $output ) {
-	error_log( print_r( $output, true ) );
+    error_log( print_r( $output, true ) );
 } );
 
 // Simply use the core functions like you normally would
@@ -32,17 +32,19 @@ $processor->report( function( $output ) {
 
 `<WP_HOME>/?tpi_refresh[]=<id1>&tcs_refresh[]=<id2>`
 
+> _works only when logged-in_
+
 ### Image::register( $name, $width, $height )
 
-- **$name** *(string)(Required)* Size identifier
-- **$width** *(int)(Required)* Width in pixels
-- **$height** *(int)(Required)* Height in pixels
+- **$name** _(string)(Required)_ Size identifier
+- **$width** _(int)(Required)_ Width in pixels
+- **$height** _(int)(Required)_ Height in pixels
 
 ### Image::manipulate( $size, $filter, $args )
 
-- **$size** *(string)(Required)* Registered size
-- **$filter** *(string)(Required)* Filter to apply
-- **$args** *(array)(Optional)* Parameters to pass. Default `null`
+- **$size** _(string)(Required)_ Registered size
+- **$filter** _(string)(Required)_ Filter to apply
+- **$args** _(array)(Optional)_ Parameters to pass. Default `null`
 
 > See available filters in <https://image.intervention.io/v2/>
 

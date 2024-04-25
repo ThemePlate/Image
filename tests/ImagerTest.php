@@ -83,6 +83,7 @@ class ImagerTest extends TestCase {
 	/** @dataProvider for_action */
 	public function test_action( $image, $size ): void {
 		expect( 'is_admin' )->andReturn( true );
+		expect( 'is_user_logged_in' )->andReturn( true );
 
 		$this->assertSame( $image, Image::action( $image, 0, $size ) );
 	}

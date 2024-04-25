@@ -107,6 +107,7 @@ class ProcessHelperTest extends TestCase {
 	public function test_forced_refresh(): void {
 		expect( 'get_metadata' )->once()->andReturn( array() );
 		expect( 'update_metadata' )->once()->andReturn( true );
+		expect( 'is_user_logged_in' )->once()->andReturn( true );
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		global $_REQUEST;
