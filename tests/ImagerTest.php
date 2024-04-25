@@ -68,28 +68,22 @@ class ImagerTest extends TestCase {
 			'with_a_string_size' => array(
 				array( 'image_data' ),
 				'size1',
-				true,
 			),
 			'with_size_as_array' => array(
 				array( 'image_data' ),
 				array( 80, 80 ),
-				true,
 			),
 			'with_unknown_image' => array(
 				false,
 				'size',
-				false,
 			),
 		);
 	}
 
 	/** @dataProvider for_action */
-	public function test_action( $image, $size, bool $with_data ): void {
+	public function test_action( $image, $size ): void {
 		expect( 'is_admin' )->andReturn( true );
 
-		$expected = $with_data ? $image : array();
-		$actual   = Image::action( $image, 0, $size );
-
-		$this->assertSame( $expected, $actual );
+		$this->assertSame( $image, Image::action( $image, 0, $size ) );
 	}
 }
