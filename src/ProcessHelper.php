@@ -82,7 +82,7 @@ class ProcessHelper {
 
 	public static function maybe_force_refresh( int $attachment_id, string $size ): void {
 
-		if ( ! is_user_logged_in() ) {
+		if ( function_exists( 'is_user_logged_in' ) && ! is_user_logged_in() ) {
 			return;
 		}
 
