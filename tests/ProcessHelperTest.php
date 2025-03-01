@@ -112,7 +112,7 @@ class ProcessHelperTest extends TestCase {
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		global $_REQUEST;
 
-		$_REQUEST['tpi_refresh'] = '123';
+		$_REQUEST['tpi_refresh'] = 123;
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		ProcessHelper::maybe_force_refresh( $_REQUEST['tpi_refresh'], 'test' );
